@@ -28,9 +28,19 @@ router.get("/cars/:id", async (req, res, next) => {
 // ******CREATE A NEW ONE******
 router.post("/cars", async (req, res, next) => {
 	try {
-		const [id] = await db("cars").insert(req.body)
-		const newCar = await db("cars").where({id}).first()
-        res.status(201).json(newCar)
+const carInfo={
+    VIN:req.body.VIN,
+    make:req.body.make,
+    model:req.body.model,
+    mileage:req.body.mileage,
+    title:req.body.title,
+    transmission:req.body.transmission,
+}
+if(!carInfo.VIN || !carInfo.make || !carInfo.model  || !carInfo.mileage  || !carInfo.title  || !carInfo.transmission){
+    return res.status(400).json({message:"missing reqired field",})
+    }
+		const [id] = await db.insert(carInfo).into("cars")
+        res.status(201).json({id})
 	} catch(err) {
 		next(err)
 	}
